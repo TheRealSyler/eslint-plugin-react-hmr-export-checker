@@ -8,15 +8,18 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/only-export-react-components"),
-  RuleTester = require("eslint").RuleTester;
+const rule = require("../../../lib/rules/only-export-react-components")
+// eslint-disable-next-line node/no-unpublished-require
+const RuleTester = require("@typescript-eslint/utils/dist/eslint-utils/rule-tester/RuleTester").RuleTester;
 
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester();
+const ruleTester = new RuleTester({
+  parser: '@typescript-eslint/parser',
+});
 
 const parserOptions = {
   ecmaVersion: 'latest',
@@ -29,19 +32,102 @@ const parserOptions = {
 ruleTester.run("only-export-react-components", rule, {
   valid: [
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "export const B = () => {return <div></div>}; export const A = () => <div></div>; export const C = <div></div>; export var v = <div></div>"
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: ` export const a = () => <></>;  export const b = () => <input/>; export const c = memo(() => {})`
     },
     {
-      parserOptions: parserOptions,
+      code: `type DataQuery = any
+    export async function awd(id: string) {
+      return []
+    }
+
+    export async function a(id: string): Promise<DataQuery | void> {
+      const f =  awd(id)
+
+      if (!f) return
+
+      for (const t of f) {
+        const field = t.fields.find((v) => v === null)
+        if (field) {
+          return { ...t, fields: [field] };
+        }
+      }
+    }`
+    },
+    {
+      parserOptions,
+      code: `type DataQuery = any
+    export async function awd(id: string) {
+      return <div></div>
+    }
+
+    export async function a(id: string): Promise<DataQuery | void> {
+      const f =  awd(id)
+
+      if (!f) return
+
+      for (const t of f) {
+        const field = t.fields.find((v) => v === null)
+        if (field) {
+          return <div></div>;
+        }
+      }
+
+    }`
+    },
+    {
+      parserOptions,
+      code: `type DataQuery = any
+    export async function awd(id: string) {
+      return <div></div>
+    }
+
+    export async function a(id: string): Promise<DataQuery | void> {
+      const f =  awd(id)
+
+      if (!f) return
+      for (const key in f) {
+        if (Object.hasOwnProperty.call(f, key)) {
+          const field = f[key];
+          if (field) {
+            return <div></div>;
+          }
+        }
+      }
+
+    }`
+    },
+    {
+      parserOptions,
+      code: `type DataQuery = any
+export async function awd(id: string) {
+  return <div></div>
+}
+
+export async function a(id: string): Promise<DataQuery | void> {
+  const f =  awd(id)
+
+  if (!f) return
+
+  for (let i = 0; i < Object.values(f).length; i++) {
+    const field = Object.values(f)[i];
+    if (field) {
+      return <div></div>;
+    }
+  }
+ 
+}`
+    },
+    {
+      parserOptions,
       code: `export { };`
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `export function a() {
             // let b 
             if (2) b = true
@@ -49,7 +135,7 @@ ruleTester.run("only-export-react-components", rule, {
 
           }`},
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `export const a = () => {
 
       if (324) return true
@@ -58,7 +144,7 @@ ruleTester.run("only-export-react-components", rule, {
 
     }`},
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `export const B = () => {
         if (true) {
           if (false) {
@@ -70,20 +156,20 @@ ruleTester.run("only-export-react-components", rule, {
         }`
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "const A = () => <input/>; export function awd() {return <A/>}"
     },
 
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "export const a = 23; export class A {render() {}}"
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `export class A {render() {return <input/>}}`
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `
         export const a = () => {
           if (true) {
@@ -109,7 +195,7 @@ ruleTester.run("only-export-react-components", rule, {
 
   invalid: [
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `const a = "string";
         export default a;
         export const B = () => <input/>
@@ -117,27 +203,27 @@ ruleTester.run("only-export-react-components", rule, {
       errors: [{ messageId: 'default' }, { messageId: 'default' }]
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "export const B = () => {}; const A = () => <input/>; export function awd() {return <A/>}",
       errors: [{ messageId: 'theMessage' }, { messageId: 'theMessage' }]
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "export const B = () => {}; export const a = () => {return <input/>}",
       errors: [{ messageId: 'theMessage' }, { messageId: 'theMessage' }]
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "export class A {render() {return <input/>}}; export const a = () => {}",
       errors: [{ messageId: 'theMessage' }, { messageId: 'theMessage' }]
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: "export const B = {}; export const a = <input/>",
       errors: [{ messageId: 'theMessage' }, { messageId: 'theMessage' }]
     },
     {
-      parserOptions: parserOptions,
+      parserOptions,
       code: `
         export const a = () => {
           if (true) {
