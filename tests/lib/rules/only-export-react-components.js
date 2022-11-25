@@ -41,22 +41,85 @@ ruleTester.run("only-export-react-components", rule, {
     },
     {
       code: `type DataQuery = any
-    export async function awd(id: string) {
-      return []
-    }
-
-    export async function a(id: string): Promise<DataQuery | void> {
-      const f =  awd(id)
-
-      if (!f) return
-
-      for (const t of f) {
-        const field = t.fields.find((v) => v === null)
-        if (field) {
-          return { ...t, fields: [field] };
+        export async function awd(id: string) {
+          return []
         }
-      }
-    }`
+
+        export async function a(id: string): Promise<DataQuery | void> {
+          const f =  awd(id)
+
+          if (!f) return
+
+          for (const t of f) {
+            if  (t === 'banana') continue
+            const field = t.fields.find((v) => v === null)
+            if (field) {
+              return { ...t, fields: [field] };
+            }
+          }
+        }`
+    },
+    {
+      code: `type DataQuery = any
+        export async function awd(id: string) {
+          return []
+        }
+
+        export async function a(id: string): Promise<DataQuery | void> {
+          const f =  awd(id)
+
+          if (!f) return
+
+          for (const t of f) {
+            const field = t.fields.find((v) => v === null)
+            if (field) {
+              return { ...t, fields: [field] };
+            }
+          }
+        }`
+    },
+    {
+      parserOptions,
+      code: `type DataQuery = any
+        export async function awd(id: string) {
+          return <div></div>
+        }
+
+        export async function a(id: string): Promise<DataQuery | void> {
+          const f =  awd(id)
+
+          if (!f) return
+
+          for (const t of f) {
+            const field = t.fields.find((v) => v === null)
+            if (field) {
+              return <div></div>;
+            }
+          }
+
+        }`
+    },
+    {
+      parserOptions,
+      code: `type DataQuery = any
+        export async function awd(id: string) {
+          return <div></div>
+        }
+
+        export async function a(id: string): Promise<DataQuery | void> {
+          const f =  awd(id)
+
+          if (!f) return
+          for (const key in f) {
+            if (Object.hasOwnProperty.call(f, key)) {
+              const field = f[key];
+              if (field) {
+                return <div></div>;
+              }
+            }
+          }
+
+        }`
     },
     {
       parserOptions,
@@ -70,8 +133,8 @@ ruleTester.run("only-export-react-components", rule, {
 
       if (!f) return
 
-      for (const t of f) {
-        const field = t.fields.find((v) => v === null)
+      for (let i = 0; i < Object.values(f).length; i++) {
+        const field = Object.values(f)[i];
         if (field) {
           return <div></div>;
         }
@@ -81,79 +144,36 @@ ruleTester.run("only-export-react-components", rule, {
     },
     {
       parserOptions,
-      code: `type DataQuery = any
-    export async function awd(id: string) {
-      return <div></div>
-    }
-
-    export async function a(id: string): Promise<DataQuery | void> {
-      const f =  awd(id)
-
-      if (!f) return
-      for (const key in f) {
-        if (Object.hasOwnProperty.call(f, key)) {
-          const field = f[key];
-          if (field) {
-            return <div></div>;
-          }
-        }
-      }
-
-    }`
-    },
-    {
-      parserOptions,
-      code: `type DataQuery = any
-export async function awd(id: string) {
-  return <div></div>
-}
-
-export async function a(id: string): Promise<DataQuery | void> {
-  const f =  awd(id)
-
-  if (!f) return
-
-  for (let i = 0; i < Object.values(f).length; i++) {
-    const field = Object.values(f)[i];
-    if (field) {
-      return <div></div>;
-    }
-  }
- 
-}`
-    },
-    {
-      parserOptions,
       code: `export { };`
     },
     {
       parserOptions,
       code: `export function a() {
-            // let b 
-            if (2) b = true
-          // return b
+                // let b 
+                if (2) b = true
+              // return b
 
-          }`},
+              }`},
     {
       parserOptions,
       code: `export const a = () => {
 
-      if (324) return true
+          if (324) return true
 
-      return false
+          return false
 
-    }`},
+        }`},
     {
       parserOptions,
       code: `export const B = () => {
-        if (true) {
-          if (false) {
-            return null
-          }
-          return "awd"
-        }
-        return <input/>
-        }`
+            if (true) {
+              if (false) {
+                return null
+              }
+              return "awd"
+            }
+            return <input/>
+            }`
     },
     {
       parserOptions,
@@ -171,24 +191,24 @@ export async function a(id: string): Promise<DataQuery | void> {
     {
       parserOptions,
       code: `
-        export const a = () => {
-          if (true) {
-          } else {
-            if  (1) {
+            export const a = () => {
+              if (true) {
+              } else {
+                if  (1) {
 
-            } else {
-              if (2) {
-                return <input/>
+                } else {
+                  if (2) {
+                    return <input/>
+
+                  }
+                }
 
               }
+              return null
             }
 
-          }
-          return null
-        }
-
-        export const b = () => <input/>
-            `,
+            export const b = () => <input/>
+                `,
 
     },
   ],
