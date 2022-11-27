@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "requireindex": "^1.2.0",
-    "suf-cli": "^0.3.2"
+    "suf-cli": "^0.5.1"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^5.44.0",
