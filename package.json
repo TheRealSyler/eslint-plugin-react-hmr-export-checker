@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-react-hmr-export-checker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Only export react components or typescript functions/variables",
   "keywords": [
     "eslint",
