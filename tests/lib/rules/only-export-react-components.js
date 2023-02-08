@@ -2,7 +2,7 @@
  * @fileoverview Only export react components or typescript functions/variables
  * @author Leonard Grosoli
  */
-"use strict";
+"use strict"
 
 //------------------------------------------------------------------------------
 // Requirements
@@ -10,7 +10,7 @@
 
 const rule = require("../../../lib/rules/only-export-react-components")
 // eslint-disable-next-line node/no-unpublished-require
-const RuleTester = require("@typescript-eslint/utils/dist/eslint-utils/rule-tester/RuleTester").RuleTester;
+const RuleTester = require("@typescript-eslint/utils/dist/eslint-utils/rule-tester/RuleTester").RuleTester
 
 
 //------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ const RuleTester = require("@typescript-eslint/utils/dist/eslint-utils/rule-test
 
 const ruleTester = new RuleTester({
   parser: '@typescript-eslint/parser',
-});
+})
 
 const parserOptions = {
   ecmaVersion: 'latest',
@@ -27,13 +27,24 @@ const parserOptions = {
     jsx: true,
   },
   sourceType: 'module'
-};
+}
 
 ruleTester.run("only-export-react-components", rule, {
   valid: [
     {
       parserOptions,
       code: "export const B = () => {return <div></div>}; export const A = () => <div></div>; export const C = <div></div>; export var v = <div></div>"
+    },
+    {
+      parserOptions,
+      code: `
+export async function f() {
+  if (false) {
+    if (true) {
+      return
+    }
+  }
+}`
     },
     {
       parserOptions,
@@ -266,4 +277,4 @@ ruleTester.run("only-export-react-components", rule, {
       errors: [{ messageId: 'theMessage' }, { messageId: 'theMessage' }]
     },
   ],
-});
+})
