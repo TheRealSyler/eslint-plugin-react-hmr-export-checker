@@ -33,14 +33,10 @@ ruleTester.run("only-export-react-components", rule, {
   valid: [
     {
       parserOptions,
-      code: `export const A = () => <Button >Add</Button>
-
-      const dataPoints = []
-
-      export const B = () => {
+      code: `export const B = () => {
         const elements = []
         
-        for (const [key, data] of Object.entries(dataPoints)) {
+        if (true) for (const [key, data] of Object.entries(dataPoints)) {
           elements.push(<Datapoint data={data} key={key}></Datapoint>)
         }
 
