@@ -16,10 +16,10 @@
     "prepack": "yarn lint && yarn test && suf"
   },
   "dependencies": {
-    "requireindex": "^1.2.0",
-    "suf-cli": "^0.5.1"
+    "requireindex": "^1.2.0"
   },
   "devDependencies": {
+    "suf-cli": "^0.5.1",
     "@typescript-eslint/parser": "^5.44.0",
     "@typescript-eslint/utils": "^5.44.0",
     "eslint": "^8.19.0",
